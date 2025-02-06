@@ -1,6 +1,6 @@
 package com.eazybank.accounts.services;
 
-import com.eazybank.accounts.dtos.CustomerDto;
+import com.eazybank.accounts.dto.CustomerDto;
 import com.eazybank.accounts.exceptions.ResourceNotFoundException;
 
 public interface AccountService {

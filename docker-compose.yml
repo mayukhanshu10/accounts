@@ -1,44 +1,55 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  mysql:
+  eazybankdb:
     image: mysql:latest
-    container_name: accountsdb
-    restart: no
+    container_name: eazybankdb
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: accountsdb
+      MYSQL_DATABASE: accountsdb  # This is needed for MySQL to start correctly
     ports:
       - "3307:3306"
     networks:
-      - app-network
+      - eazybank-network
     volumes:
-      - mysql-data:/var/lib/mysql
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - eazybankdb_data:/var/lib/mysql
+      - ./init-scripts:/docker-entrypoint-initdb.d  # Runs SQL scripts at startup
 
-  springboot-app:
-    image: mayukhsri1010/accounts:latest
-    container_name: accounts
-    restart: no
+  accountsms:
+    image: mayukhsri1010/accounts
+    container_name: accountsms
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/accountsdb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
     depends_on:
-      mysql:
-        condition: service_healthy
+      - eazybankdb
     networks:
-      - app-network
+      - eazybank-network
 
+  cardsms:
+    image: mayukhsri1010/cards
+    container_name: cardsms
+    ports:
+      - "8181:8181"
+    depends_on:
+      - eazybankdb
+    networks:
+      - eazybank-network
+
+  loansms:
+    image: mayukhsri1010/loans
+    container_name: loansms
+    ports:
+      - "8282:8282"
+    depends_on:
+      - eazybankdb
+    networks:
+      - eazybank-network
 
 networks:
-  app-network:
+  eazybank-network:
+    name: eazybank-network  # Set a fixed name
+    driver: bridge
+
 
 volumes:
-  mysql-data:
+  eazybankdb_data:

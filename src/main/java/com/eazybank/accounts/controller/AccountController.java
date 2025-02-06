@@ -1,8 +1,8 @@
-package com.eazybank.accounts.controllers;
+package com.eazybank.accounts.controller;
 
 import com.eazybank.accounts.constants.AccountConstants;
-import com.eazybank.accounts.dtos.CustomerDto;
-import com.eazybank.accounts.dtos.ResponseDto;
+import com.eazybank.accounts.dto.CustomerDto;
+import com.eazybank.accounts.dto.ResponseDto;
 import com.eazybank.accounts.exceptions.ResourceNotFoundException;
 import com.eazybank.accounts.services.AccountService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,17 +20,23 @@ import org.springframework.web.bind.annotation.*;
         name="CRUD Rest API for Accounts in EAZYBANK",
         description = "CRUD APIs"
 )
-@RestController
 @RequestMapping(path="/api")
 /*@RequestMapping(path="/api", produces = (MediaType.APPLICATION_JSON_VALUE))
     The above produces key tells that whatever API will be implemented in this controller
     the response type of that APIs will be JSON.
 */
-@AllArgsConstructor
+//@AllArgsConstructor  // Cannot Put this cauz it will include buildVersion variable too which will throw an error cannot find bean String
 @Validated // Tells to perform all the validation for the APIs present in this rest controller
+@RestController
 public class AccountController {
 
+    @Value("${build.version}")
+    private String buildVersion;
     private AccountService accountService;
+
+    AccountController(AccountService accountService){
+        this.accountService=accountService;
+    }
 
     @ApiResponse(
             responseCode = "201",
@@ -105,6 +111,12 @@ public class AccountController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDto(AccountConstants.STATUS_500,AccountConstants.MESSAGE_500));
         }
+    }
+
+
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo(){
+        return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
     }
 
 

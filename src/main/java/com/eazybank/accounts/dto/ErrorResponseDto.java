@@ -1,6 +1,5 @@
-package com.eazybank.accounts.dtos;
+package com.eazybank.accounts.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 

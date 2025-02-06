@@ -1,4 +1,4 @@
-package com.eazybank.accounts.dtos;
+package com.eazybank.accounts.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;

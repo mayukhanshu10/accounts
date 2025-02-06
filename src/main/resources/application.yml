@@ -2,12 +2,49 @@ server:
   port:8080
 
 spring:
+  application:
+    name: "accounts"
   datasource:
-    url: jdbc:mysql://localhost:3307/accountsdb
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://eazybankdb:3306/accountsdb
+    url: jdbc:mysql://localhost:3306/accountsdb
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
   jpa:
     hibernate:
       ddl-auto: none
     show-sql: true
+
+
+# This is used to handle Actuator Endpoints in the service
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # Enables all the Actuator Endpoints
+  endpoint:
+    shutdown:
+      access: unrestricted
+  info:
+    env:
+      enabled: true
+
+eureka:
+  instance:
+    prefer-ip-address: true #This property changes to hostname when we are deploying our service in cloud cauz in cloud services are registered using DNS(hostname)
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+
+
+# This info will be visible in Eureka Dashboard as there will be 100s of services
+info:
+  app:
+    name: "accounts"
+    description: "Eazy Bank Accounts Service"
+    version: "1.0.0"
+
+build:
+  version : "1.0.0"

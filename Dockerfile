@@ -1,5 +1,6 @@
 #Start With base image (that is my accounts microservice is Java Project,so it needs Java Version before running this image) containing Java Runtime
 FROM openjdk:17-jdk-slim
+WORKDIR /app
 
 # MAINTAINER instruction is deprecated in favor of using label
 # MAINTAINER eazybytes.com
